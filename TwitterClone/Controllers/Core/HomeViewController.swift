@@ -12,7 +12,7 @@ class HomeViewController: UIViewController {
     //Bir tablo tanimlanir.
     private let timelineTableView : UITableView = {
         let tableview = UITableView()
-        tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell") //tablonun icinde hucre olacagini bildiriyoruz.
+        tableview.register(TweetTableViewCell.self, forCellReuseIdentifier: TweetTableViewCell.identifier) //tablonun icinde hucre olacagini bildiriyoruz.Bu hucreleri TweetTableViewCell den cekecek.
         return tableview
     }()
 
@@ -33,12 +33,38 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
     }
+    // TweetTableViewCell icerisine tanimlanan UI elemanlari tablomuzda cagirmak icin ID sini buraya veriyoruz.
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "hello"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TweetTableViewCell.identifier, for: indexPath) as? TweetTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.delegate = self // TweetTableViewCellDelegate e bu tablodan veri gondermek icin. TweetTableViewCellDelegate Protokolunu dinliyoruz
         return cell
     }
+ 
+}
+
+// TweetTableViewCell uzerindeki butonlarin aksiyonlarini homeVC de ormek icin delegateini burada cagiriyoruz.
+extension HomeViewController:TweetTableViewCellDelegate{
+    func TweetTableViewCellDidTapReply() {
+        print("Reply")
+    }
+    
+    func TweetTableViewCellDidTapShare() {
+        print("Share")
+    }
+    
+    func TweetTableViewCellDidTapLike() {
+        print("Like")
+    }
+    
+    func TweetTableViewCellDidTapRetweet() {
+        print("Retweet")
+    }
+    
+    
 }
