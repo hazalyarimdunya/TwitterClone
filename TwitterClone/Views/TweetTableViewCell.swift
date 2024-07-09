@@ -22,7 +22,7 @@ class TweetTableViewCell: UITableViewCell {
     
     weak var delegate:TweetTableViewCellDelegate? //objesini olusturuyoruz
     
-    private let actionSpacing:CGFloat = 60  // share,like vs butonlar arasi boslugu esitlemes
+    private let actionSpacing:CGFloat = 60  // share,like vs butonlar arasi boslugu esitleme
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView() // init
         imageView.image = UIImage(systemName: "person")
