@@ -7,8 +7,33 @@
 
 import UIKit
 
+//enum for getting indexes of menus on profile page
+private enum SectionTabs:String{
+    case tweets = "Tweets"
+    case tweetsAndRepplies = "Tweets&Replies"
+    case media = "Media"
+    case likes = "Likes"
+    
+    var index : Int{
+        switch self{
+        case .tweets: return 0
+        case .tweetsAndRepplies: return 1
+        case .media: return 2
+        case .likes: return 3
+        }
+    }
+}
+
 class ProfileHeaderUIView: UIView {
     
+    private var selectedTab:Int = 0 {
+        didSet{
+            print(selectedTab)
+        }
+    }
+    
+    
+        
     private let profileHeaderImageView : UIImageView = {
        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,16 +74,17 @@ class ProfileHeaderUIView: UIView {
     
     private let profileBioLabel : UILabel = {
         let label = UILabel()
-        label.text = "Hazal Yarimdunya's bio, open to everybody"
+        label.text = "Hazal Yarimdunya's bio, open to everybody try to type something that discripe you 's bio, open to everybody try to type something that discripe you"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 0
 
         return label
     }()
     
     private let joinedDateImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "calendar", withConfiguration: UIImage.SymbolConfiguration(pointSize: 13))
+        imageView.image = UIImage(systemName: "calendar", withConfiguration: UIImage.SymbolConfiguration(pointSize: 15))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.tintColor = .secondaryLabel
         return imageView
@@ -105,6 +131,27 @@ class ProfileHeaderUIView: UIView {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         return label
     }()
+    
+    //Profile page menus(tweets,replies,media vs)
+    //map:bir koleksiyonun (dizi, set, sözlük vb.) her bir öğesi üzerinde aynı işlemi gerçekleştirerek yeni bir koleksiyon oluşturmanızı sağlar.
+    private var tabs:[UIButton] = ["Tweets","Tweets&Replies","Media","Likes"].map{ buttonTitles in
+        let button = UIButton(type: .system)
+        button.setTitle(buttonTitles, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.tintColor = .label
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+    
+    //staackView:subviewlari yatay ve dikey duzenlemeyi saglar.
+    private lazy var sectionStack : UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: tabs) //buton tipindeki subviewlari stack icine ekleme
+        stackView.distribution = .equalSpacing
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -119,44 +166,78 @@ class ProfileHeaderUIView: UIView {
         addSubview(followingTextLabel)
         addSubview(followersCountLabel)
         addSubview(followingCountLabel)
+        addSubview(sectionStack)
         configureConstraints()
+        configureStackButton()
     }
+    
+    private func configureStackButton(){
+        //enumareted(): bir dizi veya başka bir sıralı koleksiyonun her bir öğesinin indexini(_) ve degerini(buttons) içeren bir sekans döndürür.
+        for(_,buttons) in sectionStack.arrangedSubviews.enumerated(){
+            guard let button = buttons as? UIButton else{return }
+            button.addTarget(self, action: #selector(didTapTaps(_:)), for: .touchUpInside)
+            
+        }
+    }
+    @objc private func didTapTaps(_ sender:UIButton){
+        guard let label = sender.titleLabel?.text else {return} //cliklenen her butonun textini label degiskenine atiyoruz.
+        switch label { //butonlarin rawValue degeri yani title degeri label degiskeni ile ayniysa ona gore caseler calisir.
+        case SectionTabs.tweets.rawValue:
+            selectedTab = 0
+        case SectionTabs.tweetsAndRepplies.rawValue:
+            selectedTab = 1
+        case SectionTabs.media.rawValue:
+            selectedTab = 2
+        case SectionTabs.likes.rawValue:
+            selectedTab = 3
+        default:
+            selectedTab = 4
+        }
+        
+    }
+    
+    
+    
+    
+    
+
     
     private func configureConstraints(){
        let profileHeaderImageViewConstraints = [
         profileHeaderImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
         profileHeaderImageView.topAnchor.constraint(equalTo: topAnchor),
         profileHeaderImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-        profileHeaderImageView.heightAnchor.constraint(equalToConstant: 150)
+        profileHeaderImageView.heightAnchor.constraint(equalToConstant: 120)
         ]
         let profileAvatarImageViewConstraints = [
             profileAvatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            profileAvatarImageView.centerYAnchor.constraint(equalTo: profileHeaderImageView.bottomAnchor, constant: 5),
+            profileAvatarImageView.centerYAnchor.constraint(equalTo: profileHeaderImageView.bottomAnchor), //Y ekseninde headerImagein bottomina gore avatari ortala
             profileAvatarImageView.heightAnchor.constraint(equalToConstant: 80),
             profileAvatarImageView.widthAnchor.constraint(equalToConstant: 80)
         ]
         let displayNameConstraints = [
-            displayNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            displayNameLabel.topAnchor.constraint(equalTo: profileAvatarImageView.bottomAnchor, constant: 20)
+            displayNameLabel.leadingAnchor.constraint(equalTo: profileAvatarImageView.leadingAnchor),
+            displayNameLabel.topAnchor.constraint(equalTo: profileAvatarImageView.bottomAnchor, constant: 10)
         ]
         let usernameLabelConstraints = [
-            usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            usernameLabel.leadingAnchor.constraint(equalTo: profileAvatarImageView.leadingAnchor),
             usernameLabel.topAnchor.constraint(equalTo: displayNameLabel.bottomAnchor, constant: 10)
         ]
         let profileBioLabelConstraints = [
-            profileBioLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            profileBioLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 10)
+            profileBioLabel.leadingAnchor.constraint(equalTo: profileAvatarImageView.leadingAnchor),
+            profileBioLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 10),
+            profileBioLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ]
         let joinedDateImageViewConstraints = [
-            joinedDateImageView.leadingAnchor.constraint(equalTo: displayNameLabel.leadingAnchor),
+            joinedDateImageView.leadingAnchor.constraint(equalTo: profileAvatarImageView.leadingAnchor),
             joinedDateImageView.topAnchor.constraint(equalTo: profileBioLabel.bottomAnchor, constant: 10)
         ]
         let joinedDateLabelConstraints = [
             joinedDateLabel.leadingAnchor.constraint(equalTo: joinedDateImageView.trailingAnchor, constant: 5),
-            joinedDateLabel.bottomAnchor.constraint(equalTo: joinedDateImageView.bottomAnchor)
+            joinedDateLabel.centerYAnchor.constraint(equalTo: joinedDateImageView.centerYAnchor)
         ]
         let followingCountLabelConstraints = [
-            followingCountLabel.leadingAnchor.constraint(equalTo: displayNameLabel.leadingAnchor),
+            followingCountLabel.leadingAnchor.constraint(equalTo: profileAvatarImageView.leadingAnchor),
             followingCountLabel.topAnchor.constraint(equalTo: joinedDateImageView.bottomAnchor, constant: 10),
         ]
         let followingTextLabelConstraints = [
@@ -171,6 +252,13 @@ class ProfileHeaderUIView: UIView {
             followersTextLabel.leadingAnchor.constraint(equalTo: followersCountLabel.trailingAnchor, constant: 5),
             followersTextLabel.bottomAnchor.constraint(equalTo: followersCountLabel.bottomAnchor)
         ]
+        let sectionStackConstraints = [
+            sectionStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25),
+            sectionStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25),
+            sectionStack.topAnchor.constraint(equalTo: followersTextLabel.bottomAnchor, constant: 10),
+            sectionStack.heightAnchor.constraint(equalToConstant: 30),
+            sectionStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 10)
+        ]
         
         NSLayoutConstraint.activate(profileHeaderImageViewConstraints)
         NSLayoutConstraint.activate(profileAvatarImageViewConstraints)
@@ -183,6 +271,7 @@ class ProfileHeaderUIView: UIView {
         NSLayoutConstraint.activate(followingTextLabelConstraints)
         NSLayoutConstraint.activate(followingCountLabelConstraints)
         NSLayoutConstraint.activate(followersCountLabelConstraints)
+        NSLayoutConstraint.activate(sectionStackConstraints)
     }
     
     required init?(coder: NSCoder) {

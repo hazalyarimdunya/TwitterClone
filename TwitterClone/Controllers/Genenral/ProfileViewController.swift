@@ -24,8 +24,9 @@ class ProfileViewController: UIViewController {
         view.addSubview(profileTableView)
         
         //Profil ekranina bir header alani icin view generate edileccek.
-        let headerView = ProfileHeaderUIView(frame: CGRect(x: 0, y: 0, width: profileTableView.frame.width, height: 350))
-        
+        let headerView = ProfileHeaderUIView(frame: CGRect(x: 0, y: 0, width: profileTableView.frame.width, height: 380))
+        //let headerView = ProfileHeaderUIView()
+
         profileTableView.delegate = self
         profileTableView.dataSource = self
         profileTableView.tableHeaderView = headerView //profil ekranindaki tabloya yaratilan header alani atanacak.
