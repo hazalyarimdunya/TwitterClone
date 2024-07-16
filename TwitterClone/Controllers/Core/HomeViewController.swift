@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class HomeViewController: UIViewController {
     
@@ -55,13 +56,20 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         timelineTableView.frame = view.frame
     }
-    /*
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden  = false
+        if Auth.auth().currentUser == nil{ //Eger suanki kullanici bir sey gondermiyorsa
+            let vs = UINavigationController(rootViewController: OnboardingViewController())
+            vs.modalPresentationStyle = .fullScreen
+            present(vs, animated: false)
+
+        }
+        
     }
-     */
+     
 }
 
 extension HomeViewController:UITableViewDelegate,UITableViewDataSource{

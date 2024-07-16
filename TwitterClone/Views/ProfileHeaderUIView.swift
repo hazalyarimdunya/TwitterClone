@@ -25,14 +25,6 @@ private enum SectionTabs:String{
 }
 
 class ProfileHeaderUIView: UIView {
-    
-    private var selectedTab:Int = 0 {
-        didSet{
-            print(selectedTab)
-        }
-    }
-    
-    
         
     private let profileHeaderImageView : UIImageView = {
        let imageView = UIImageView()
@@ -153,6 +145,31 @@ class ProfileHeaderUIView: UIView {
         return stackView
     }()
 
+    private var selectedTab:Int = 0 {
+        didSet{
+            for i in 0..<tabs.count{ //menulerin altindaki cizgi icinn bir annimasyon kurruyoruz.
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) { [weak self] in
+                    self?.sectionStack.arrangedSubviews[i].tintColor = i == self?.selectedTab ? .label : .secondaryLabel
+                    // Eger i selectedTab a esitse, secilen tabin rengi '.label' olur, geriye kalan tablar '.secondaryLabel' olur.
+                    self?.myLeadingAnchors[i].isActive = i == self?.selectedTab ? true  : false
+                    self?.myTrailingAnchors[i].isActive = i == self?.selectedTab ? true  : false
+                    self?.layoutIfNeeded()
+                } completion: { _ in }
+            }
+        }
+    }
+    
+    private let indicator:UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor(red: 29/255, green: 161/255, blue: 242/255, alpha: 1)
+        return view
+    }()
+    
+    private var myLeadingAnchors:[NSLayoutConstraint] = []
+    private var myTrailingAnchors:[NSLayoutConstraint] = []
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(profileHeaderImageView)
@@ -167,14 +184,21 @@ class ProfileHeaderUIView: UIView {
         addSubview(followersCountLabel)
         addSubview(followingCountLabel)
         addSubview(sectionStack)
+        addSubview(indicator)
         configureConstraints()
         configureStackButton()
     }
     
     private func configureStackButton(){
-        //enumareted(): bir dizi veya başka bir sıralı koleksiyonun her bir öğesinin indexini(_) ve degerini(buttons) içeren bir sekans döndürür.
-        for(_,buttons) in sectionStack.arrangedSubviews.enumerated(){
+        //enumareted(): bir dizi veya başka bir sıralı koleksiyonun her bir öğesinin indexini(i) ve degerini(buttons) içeren bir sekans döndürür.
+        for(i,buttons) in sectionStack.arrangedSubviews.enumerated(){
             guard let button = buttons as? UIButton else{return }
+            if i == selectedTab {
+                button.tintColor = .label
+            }
+            else{
+                button.tintColor = .secondaryLabel
+            }
             button.addTarget(self, action: #selector(didTapTaps(_:)), for: .touchUpInside)
             
         }
@@ -195,12 +219,6 @@ class ProfileHeaderUIView: UIView {
         }
         
     }
-    
-    
-    
-    
-    
-
     
     private func configureConstraints(){
        let profileHeaderImageViewConstraints = [
@@ -260,6 +278,21 @@ class ProfileHeaderUIView: UIView {
             sectionStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 10)
         ]
         
+        for i in 0..<tabs.count{  //indictorun(menu alt cizgisi) leading ve trailingi butonun leading ve trailingine esitlendi. ve diziye eklendi.
+            let leadingAnchor = indicator.leadingAnchor.constraint(equalTo: sectionStack.arrangedSubviews[i].leadingAnchor)
+            myLeadingAnchors.append(leadingAnchor)
+            let trailingAnchors = indicator.trailingAnchor.constraint(equalTo: sectionStack.arrangedSubviews[i].trailingAnchor)
+            myTrailingAnchors.append(trailingAnchors)
+        }
+        let indicatorConstraints = [
+            myLeadingAnchors[0],
+            myTrailingAnchors[0],
+            indicator.topAnchor.constraint(equalTo: sectionStack.arrangedSubviews[0].bottomAnchor),
+            indicator.heightAnchor.constraint(equalToConstant: 5)
+        ]
+        
+        
+        
         NSLayoutConstraint.activate(profileHeaderImageViewConstraints)
         NSLayoutConstraint.activate(profileAvatarImageViewConstraints)
         NSLayoutConstraint.activate(displayNameConstraints)
@@ -272,6 +305,7 @@ class ProfileHeaderUIView: UIView {
         NSLayoutConstraint.activate(followingCountLabelConstraints)
         NSLayoutConstraint.activate(followersCountLabelConstraints)
         NSLayoutConstraint.activate(sectionStackConstraints)
+        NSLayoutConstraint.activate(indicatorConstraints)
     }
     
     required init?(coder: NSCoder) {
