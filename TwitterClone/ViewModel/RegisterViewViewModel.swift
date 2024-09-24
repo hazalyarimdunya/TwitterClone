@@ -35,10 +35,25 @@ final class RegisterViewViewModel:ObservableObject{
         return emailPred.evaluate(with: email)
     }
     
+    
+    //yeni kullanici yaratma
     func createUser(){
         guard let email = email,
               let password  = password else {return}
         AuthManager.shared.registerUser(with: email, password: password).sink { _ in
+            
+        } receiveValue: { [weak self] user in
+            self?.user = user
+        }
+        .store(in: &subscriptions) //abonelikleri saklamak ve yaşam döngüsünü yönetmek için kullanılır.
+
+    }
+    
+    //var olan kullanici ile login olma.
+    func loginUser(){
+        guard let email = email,
+              let password  = password else {return}
+        AuthManager.shared.loginUser(with: email, password: password).sink { _ in
             
         } receiveValue: { [weak self] user in
             self?.user = user

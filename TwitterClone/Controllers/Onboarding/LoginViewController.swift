@@ -1,21 +1,22 @@
 //
-//  RegisterViewController.swift
+//  LoginViewController.swift
 //  TwitterClone
 //
-//  Created by PC on 19.07.2024.
+//  Created by PC on 23.09.2024.
 //
 
 import UIKit
 import Combine
 
-class RegisterViewController: UIViewController {
+class LoginViewController: UIViewController {
+    
     
     private var viewModel = RegisterViewViewModel()
     private var subscriptions: Set<AnyCancellable> = []
     
     private let titleLabel:UILabel = {
         let label = UILabel()
-        label.text = "Create your account"
+        label.text = "Login to your account"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20, weight: .heavy)
         label.textColor = .label
@@ -38,10 +39,10 @@ class RegisterViewController: UIViewController {
         textField.isSecureTextEntry = true
         return textField
     }()
-    private let registerAccountButton:UIButton = {
+    private let loginAccountButton:UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Register", for: .normal)
+        button.setTitle("Login", for: .normal)
         button.layer.cornerRadius = 30
         button.layer.masksToBounds = true
         button.backgroundColor = UIColor(red: 29/255, green: 161/255, blue: 242/255, alpha: 1)
@@ -56,7 +57,7 @@ class RegisterViewController: UIViewController {
         emailTextField.addTarget(self, action: #selector(didChagneEmailField), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(didChangePasswordField), for: .editingChanged)
         viewModel.$isRegistrationFormValid.sink { [weak self] validationState in
-            self?.registerAccountButton.isEnabled = validationState
+            self?.loginAccountButton.isEnabled = validationState
         }
         .store(in: &subscriptions)
         
@@ -67,6 +68,7 @@ class RegisterViewController: UIViewController {
         }
         .store(in: &subscriptions)
     }
+    
     @objc private func didChagneEmailField(){
         viewModel.email = emailTextField.text
         viewModel.ValidateRegistrationForm()
@@ -80,22 +82,23 @@ class RegisterViewController: UIViewController {
         view.endEditing(true)
     }
     
-    @objc private func didTopRegister(){
+    @objc private func didTopLogin(){
         viewModel.createUser()
     }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         view.addSubview(titleLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
-        view.addSubview(registerAccountButton)
+        view.addSubview(loginAccountButton)
         ConfigureConstraints()
         //klavye bos yere tiklaninca kapanir.
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTopToDismiss)))
         bindViews()
-        registerAccountButton.addTarget(self, action: #selector(didTopRegister),for : .touchUpInside)
+        loginAccountButton.addTarget(self, action: #selector(didTopLogin),for : .touchUpInside)
+
 
     }
     
@@ -113,10 +116,10 @@ class RegisterViewController: UIViewController {
             passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 40)
         ]
         let registerAccountConstraints = [
-            registerAccountButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            registerAccountButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
-            registerAccountButton.widthAnchor.constraint(equalTo: titleLabel.widthAnchor, constant: 80),
-            registerAccountButton.heightAnchor.constraint(equalToConstant: 60)
+            loginAccountButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loginAccountButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
+            loginAccountButton.widthAnchor.constraint(equalTo: titleLabel.widthAnchor, constant: 80),
+            loginAccountButton.heightAnchor.constraint(equalToConstant: 60)
         ]
         
         NSLayoutConstraint.activate(titleLabelConstrains)

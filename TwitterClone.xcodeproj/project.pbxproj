@@ -36,6 +36,7 @@
 		4FC19CEF2C4AB4B100DBC31B /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC19CEE2C4AB4B100DBC31B /* RegisterViewController.swift */; };
 		4FC19CF22C71037800DBC31B /* RegisterViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC19CF12C71037800DBC31B /* RegisterViewViewModel.swift */; };
 		4FC19CF62C9C5CAB00DBC31B /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC19CF52C9C5CAB00DBC31B /* AuthManager.swift */; };
+		4FC19CF82CA1ADAB00DBC31B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC19CF72CA1ADAA00DBC31B /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 		4FC19CEE2C4AB4B100DBC31B /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		4FC19CF12C71037800DBC31B /* RegisterViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewViewModel.swift; sourceTree = "<group>"; };
 		4FC19CF52C9C5CAB00DBC31B /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		4FC19CF72CA1ADAA00DBC31B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 			children = (
 				4FC19CEC2C4715D200DBC31B /* OnboardingViewController.swift */,
 				4FC19CEE2C4AB4B100DBC31B /* RegisterViewController.swift */,
+				4FC19CF72CA1ADAA00DBC31B /* LoginViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				4FB9E8612C2B09A900B8B567 /* SearchViewController.swift in Sources */,
 				4FC19CF62C9C5CAB00DBC31B /* AuthManager.swift in Sources */,
 				4FB9E8312C2AEE7E00B8B567 /* MainTabbarViewController.swift in Sources */,
+				4FC19CF82CA1ADAB00DBC31B /* LoginViewController.swift in Sources */,
 				4FB9E82D2C2AEE7E00B8B567 /* AppDelegate.swift in Sources */,
 				4FC19CEF2C4AB4B100DBC31B /* RegisterViewController.swift in Sources */,
 				4FB9E8632C2B0A0800B8B567 /* NotificationsViewController.swift in Sources */,

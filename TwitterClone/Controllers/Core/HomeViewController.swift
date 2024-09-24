@@ -44,11 +44,18 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(timelineTableView) //sub view olarak tabloyu ekliyoruz
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: #selector(didTapSignOut))
         
         //tabloya veri gondermek icin bazi protokoller(interface) olusturulur.(dataSource,delegate)
         timelineTableView.delegate = self
         timelineTableView.dataSource = self
         configureNavigationBar()
+    }
+    
+    @objc private func didTapSignOut(){
+         try? Auth.auth().signOut()
+        handleAuthantication()
+        
     }
     
     // tablonun ekranda gozukmesi icin
@@ -57,17 +64,17 @@ class HomeViewController: UIViewController {
         timelineTableView.frame = view.frame
     }
     
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.isHidden  = false
+    private func handleAuthantication() {
         if Auth.auth().currentUser == nil{ //Eger suanki kullanici bir sey gondermiyorsa
             let vs = UINavigationController(rootViewController: OnboardingViewController())
             vs.modalPresentationStyle = .fullScreen
             present(vs, animated: false)
-
         }
-        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden  = false
+        handleAuthantication()
     }
      
 }
